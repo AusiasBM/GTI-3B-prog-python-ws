@@ -26,6 +26,16 @@ def make_flights():
 f1, f2, f3 = make_flights()
 
 
+# Recolocar pasajero
+f1.reallocate_passenger('12A', '1A')
+
+
 for fl in f1, f2, f3:
+  print("\n\nVuelo --------------------------------------------------------------\n")
   fl.print_seating()
   fl.print_boarding_cards()
+  
+  #Cantidad de asientos desocupados
+  print("Asientos desocupados = " + str(fl.num_available_seats()))
+
+  
