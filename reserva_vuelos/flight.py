@@ -5,6 +5,7 @@
         Flight
 """
 
+from re import A
 import aircraft 
 
 class Flight:
@@ -33,15 +34,29 @@ class Flight:
             aircraft (Aircraft): Avión del vuelo
 
         """
+    
         self.__number = number
+
+        if list(filter(lambda l: l.isdigit(), self.__number[:2])) != []:
+            raise ValueError("Los primeros dos dígitos del número de vuelo tienen que ser letras")
+            
+        if list(filter(lambda l: l.islower(), self.__number[:2])) != []:
+            raise ValueError("Los primeros dos carácteres del número de vuelo tienen que ser mayúscula")
+        
+        if list(filter(lambda n: not n.isdigit(), self.__number[2:])) != []:
+            raise ValueError("El número de vuelo tiene que llevar números luego de los dos primeros carácteres")
+
+        if int(self.__number[2:]) > 9999:
+            print("El número es demasiado grande")      
+
         self.__aircraft = aircraft
         self.__seating = []
-        filasAsientos, letrasAsientos = self.__aircraft.seating_plan()
+        self.__filasAsientos, self.__letrasAsientos = self.__aircraft.seating_plan()
 
-        for fila in filasAsientos:
+        for fila in self.__filasAsientos:
             if(fila != None):
                 dic = {}
-                for asiento in letrasAsientos:
+                for asiento in self.__letrasAsientos:
                     dic[asiento] = None
                 
                 self.__seating.append(dic)
@@ -56,6 +71,9 @@ class Flight:
 
         """
         fila, letra = self.__parse_seat(seat)
+        if self.__seating[fila][letra] != None:
+            raise ValueError("El asiento está ocupado")
+
         self.__seating[fila][letra] = list(passenger)
     
     def reallocate_passenger(self, from_seat, to_seat):
@@ -67,6 +85,10 @@ class Flight:
 
         """
         filaAntes, letraAntes = self.__parse_seat(from_seat)
+
+        if self.__seating[filaAntes][letraAntes] == None:
+            raise ValueError("El asiento original está vacío")
+
         filaNueva, letraNueva = self.__parse_seat(to_seat)
         passenger = self.__seating[filaAntes][letraAntes]
         self.__seating[filaAntes][letraAntes] = None
@@ -135,6 +157,18 @@ class Flight:
             letter: La letra del asede, como la "C
 
         """
+        
+
+
+        if list(filter(lambda a: a == seat[-1:], self.__letrasAsientos)) == []:
+            raise ValueError("La letra del asiento no existe")
+
+        if list(filter(lambda a: not a.isdigit(), seat[:-1])) != []:
+            raise ValueError("El valor de la fíla tiene que ser un número")
+       
+        if int(seat[:-1]) >= int(self.__filasAsientos[-1]):
+            raise ValueError("La fila no existe")
+
         # fila, letra
         return int(seat[:-1]), seat[-1:]
     
