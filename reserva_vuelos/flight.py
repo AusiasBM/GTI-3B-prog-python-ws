@@ -47,7 +47,7 @@ class Flight:
             raise ValueError("El número de vuelo tiene que llevar números luego de los dos primeros carácteres")
 
         if int(self.__number[2:]) > 9999:
-            print("El número es demasiado grande")      
+            raise ValueError("El número es demasiado grande")      
 
         self.__aircraft = aircraft
         self.__seating = []
